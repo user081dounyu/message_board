@@ -37,17 +37,23 @@ public class IndexServlet extends HttpServlet {
         //response.getWriter().append("Served at: ").append(request.getContextPath());
 
         EntityManager em = DBUtil.createEntityManager();
-        
+
         List<Message> messages = em.createNamedQuery("getAllMessages", Message.class).getResultList();
-        
+
         //response.getWriter().append(Integer.valueOf(messages.size()).toString());
         em.close();
-        
+
         request.setAttribute("messages", messages);
-        
+
+        //よくわからん
+        if(request.getSession().getAttribute("flush") != null) {
+            request.setAttribute("flush", request.getSession().getAttribute("flush"));
+            request.getSession().removeAttribute("flush");
+        }
+
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/messages/index.jsp");
         rd.forward(request, response);
-        
+
     }
 
 }
